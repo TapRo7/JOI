@@ -1,0 +1,23 @@
+{
+  "name": "joi",
+  "version": "1.0.0",
+  "description": "A Discord.JS bot to utilize fast response times and CV2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TapRo7/JOI.git"
+  },
+  "author": "TapRo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TapRo7/JOI/issues"
+  },
+  "homepage": "https://github.com/TapRo7/JOI#readme",
+  "dependencies": {
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.2.0"
+  }
+}
