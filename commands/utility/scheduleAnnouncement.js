@@ -31,25 +31,25 @@ module.exports = {
 
 		if (attachments.length !== 0) {
 			const uniqueId = uuidv4();
-      const baseDir = path.join(__dirname, 'Attachments', uniqueId);
-      fs.mkdirSync(baseDir, { recursive: true });
+			const baseDir = path.join(__dirname, 'Attachments', uniqueId);
+			fs.mkdirSync(baseDir, { recursive: true });
 
-      try {
-        for (const attachment of attachments) {
-          const fileUrl = attachment.url;
-          const fileName = attachment.name;
-          const savePath = path.join(baseDir, fileName);
+			try {
+				for (const attachment of attachments) {
+				const fileUrl = attachment.url;
+				const fileName = attachment.name;
+				const savePath = path.join(baseDir, fileName);
 
-          const response = await fetch(fileUrl);
-          if (!response.ok) throw new Error(`Failed to fetch ${fileName}: ${response.statusText}`);
+				const response = await fetch(fileUrl);
+				if (!response.ok) throw new Error(`Failed to fetch ${fileName}: ${response.statusText}`);
 
-          const fileStream = fs.createWriteStream(savePath);
-          await pipeline(response.body, fileStream);
-        }
-      } catch (err) {
-        console.error(err);
-        return await interaction.editReply('❌ Failed to save one or more files.');
-      }
-	  }  
-  }
+				const fileStream = fs.createWriteStream(savePath);
+				await pipeline(response.body, fileStream);
+				}
+			} catch (err) {
+				console.error(err);
+				return await interaction.editReply('❌ Failed to save one or more files.');
+			}
+	    }  
+    }
 };
