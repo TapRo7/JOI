@@ -61,5 +61,24 @@ module.exports = {
 				console.error(error);
 			}
 		}
+		else if (interaction.isButton()) {
+			const handler = interaction.client.buttons.get(interaction.customId);
+			if (!handler) {
+				console.log(`No handler found for Button Custom ID: ${interaction.customId}`);
+				return;
+			}
+
+			try {
+				await handler.execute(interaction);
+			}
+			catch (err) {
+				console.log(err)
+				if (interaction.replied || interaction.deferred) {
+					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				} else {
+					await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				}
+			}
+		}
 	}
 }

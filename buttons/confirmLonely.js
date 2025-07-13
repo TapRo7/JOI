@@ -1,5 +1,3 @@
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
-
 const locales = {
   de: "Du siehst einsam aus. Ich kann das ändern.",
   fr: "Tu as l'air seul, je peux arranger ça.",
@@ -33,21 +31,8 @@ const locales = {
 };
 
 module.exports = {
-	cooldown : 60,
-	data: new SlashCommandBuilder()
-		.setName('lonely')
-		.setDescription('I can help')
-		.addBooleanOption(option => option.setName("ephemeral").setDescription("Should the loneliness be hidden from others?")),
-    
-	async execute(interaction) {
-		const ephemeral = interaction.options.getBoolean('ephemeral') ?? true;
-		if (ephemeral) {
-			await interaction.deferReply({ flags: MessageFlags.Ephemeral});
-		}
-		else {
-			await interaction.deferReply()
-		}
-		
-		await interaction.editReply({ content: locales[interaction.locale] ?? 'You look lonely, I can fix that.' });
-	},
+  customId: 'confirmLonely',
+  async execute(interaction) {
+    return await interaction.update({ content: locales[interaction.locale] ?? 'You look lonely, I can fix that.', components: [] });
+  },
 };

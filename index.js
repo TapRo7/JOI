@@ -9,6 +9,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 client.commands = new Collection();
 client.cooldowns = new Collection();
+client.buttons = new Map();
 
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -38,6 +39,15 @@ for (const file of eventFiles) {
 	} else {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
+}
+
+const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+
+for (const file of buttonFiles) {
+  const button = require(`./buttons/${file}`);
+  if (button.customId && typeof button.execute === 'function') {
+    client.buttons.set(button.customId, button);
+  }
 }
 
 client.login(token);

@@ -50,6 +50,6 @@ module.exports = {
 				console.error(err);
 				return await interaction.editReply('❌ Failed to save one or more files.');
 			}
-	    }  
+	    }
     }
 };
