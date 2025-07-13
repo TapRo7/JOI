@@ -44,10 +44,10 @@ for (const file of eventFiles) {
 const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
 
 for (const file of buttonFiles) {
-  const button = require(`./buttons/${file}`);
-  if (button.customId && typeof button.execute === 'function') {
-    client.buttons.set(button.customId, button);
-  }
+	const button = require(`./buttons/${file}`);
+	if (button.customId && typeof button.execute === 'function') {
+		client.buttons.set(button.customId, button);
+	}
 }
 
 client.login(token);

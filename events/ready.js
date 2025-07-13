@@ -6,6 +6,6 @@ module.exports = {
 	execute(client) {
 		console.log(`Client Ready! Logged in as ${client.user.tag}`);
 		client.user.setPresence({ status: "dnd" })
-		client.user.setActivity("you sleep", { type: ActivityType.Watching} )
+		client.user.setActivity("you sleep", { type: ActivityType.Watching })
 	},
 };

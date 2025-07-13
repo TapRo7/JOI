@@ -32,17 +32,17 @@ const rest = new REST().setToken(token);
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-        // ENABLE IF YOU NEED TO REMOVE COMMANDS
-        
-        //const removalData = await rest.put(
-        //    Routes.applicationCommands(clientId),
-        //    { body: [] }
-        //);
+		// ENABLE IF YOU NEED TO REMOVE COMMANDS
+
+		//const removalData = await rest.put(
+		//    Routes.applicationCommands(clientId),
+		//    { body: [] }
+		//);
 
 		//const removalData2 = await rest.put(
-        //    Routes.applicationGuildCommands(clientId, guildId),
-        //    { body: [] }
-        //);
+		//    Routes.applicationGuildCommands(clientId, guildId),
+		//    { body: [] }
+		//);
 
 		const data = await rest.put(
 			Routes.applicationCommands(clientId),

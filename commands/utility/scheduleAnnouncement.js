@@ -36,20 +36,20 @@ module.exports = {
 
 			try {
 				for (const attachment of attachments) {
-				const fileUrl = attachment.url;
-				const fileName = attachment.name;
-				const savePath = path.join(baseDir, fileName);
+					const fileUrl = attachment.url;
+					const fileName = attachment.name;
+					const savePath = path.join(baseDir, fileName);
 
-				const response = await fetch(fileUrl);
-				if (!response.ok) throw new Error(`Failed to fetch ${fileName}: ${response.statusText}`);
+					const response = await fetch(fileUrl);
+					if (!response.ok) throw new Error(`Failed to fetch ${fileName}: ${response.statusText}`);
 
-				const fileStream = fs.createWriteStream(savePath);
-				await pipeline(response.body, fileStream);
+					const fileStream = fs.createWriteStream(savePath);
+					await pipeline(response.body, fileStream);
 				}
 			} catch (err) {
 				console.error(err);
 				return await interaction.editReply('❌ Failed to save one or more files.');
 			}
-	    }
-    }
+		}
+	}
 };
