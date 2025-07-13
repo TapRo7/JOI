@@ -39,10 +39,10 @@ const rest = new REST().setToken(token);
         //    { body: [] }
         //);
 
-		const removalData2 = await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
-            { body: [] }
-        );
+		//const removalData2 = await rest.put(
+        //    Routes.applicationGuildCommands(clientId, guildId),
+        //    { body: [] }
+        //);
 
 		const data = await rest.put(
 			Routes.applicationCommands(clientId),
