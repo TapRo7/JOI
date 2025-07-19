@@ -1,7 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { connectToDatabase, setupDatabase } = require('./database/index')
 
 require("dotenv").config()
 const token = process.env.BOT_TOKEN;
@@ -49,14 +48,6 @@ for (const file of buttonFiles) {
 	if (button.customId && typeof button.execute === 'function') {
 		client.buttons.set(button.customId, button);
 	}
-}
-
-try {
-	await connectToDatabase()
-	await setupDatabase()
-} catch (error) {
-	console.log(`Error connecting to or setting up Database: ${error}\nUnable to start bot.`)
-	process.exit(1);
 }
 
 client.login(token);

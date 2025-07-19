@@ -13,11 +13,11 @@ async function connectToDatabase() {
 }
 
 async function setupDatabase() {
-  const collections = await db.listCollections({}, { nameOnly: true }).toArray();
+  const collections = await database.listCollections({}, { nameOnly: true }).toArray();
   const collectionNames = collections.map(col => col.name);
 
   if (!collectionNames.includes('scheduledAnnouncements')) {
-    await db.createCollection('scheduledAnnouncements');
+    await database.createCollection('scheduledAnnouncements');
     console.log('Created "scheduledAnnouncements" collection');
   } else {
     console.log('"scheduledAnnouncements" collection found');
