@@ -5,7 +5,6 @@ const path = require('node:path');
 require("dotenv").config()
 const token = process.env.BOT_TOKEN;
 const clientId = process.env.CLIENT_ID
-const guildId = process.env.DEV_GUILD_ID
 
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
@@ -32,7 +31,7 @@ const rest = new REST().setToken(token);
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-		// ENABLE IF YOU NEED TO REMOVE COMMANDS
+		// Un-Comment the two blocks of code below and run this file if your bot has old synced commands that need to be unsynced.
 
 		//const removalData = await rest.put(
 		//    Routes.applicationCommands(clientId),

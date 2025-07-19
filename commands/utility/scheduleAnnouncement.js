@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { pipeline } = require('stream/promises');
 const { v4: uuidv4 } = require('uuid');
+const { MongoClient } = require('mongodb');
 
 module.exports = {
 	cooldown: 60,
@@ -31,7 +32,7 @@ module.exports = {
 
 		if (attachments.length !== 0) {
 			const uniqueId = uuidv4();
-			const baseDir = path.join(__dirname, 'Attachments', uniqueId);
+			const baseDir = path.join(__dirname, '..', '..', 'Attachments', uniqueId);
 			fs.mkdirSync(baseDir, { recursive: true });
 
 			try {
@@ -46,7 +47,7 @@ module.exports = {
 					const fileStream = fs.createWriteStream(savePath);
 					await pipeline(response.body, fileStream);
 				}
-			} catch (err) {
+			} catch (error) {
 				console.error(err);
 				return await interaction.editReply('❌ Failed to save one or more files.');
 			}
