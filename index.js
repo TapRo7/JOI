@@ -10,6 +10,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.commands = new Collection();
 client.cooldowns = new Collection();
 client.buttons = new Map();
+client.modals = new Map();
+client.selects = new Map();
 
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -41,13 +43,31 @@ for (const file of eventFiles) {
 	}
 }
 
-//const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
-//
-//for (const file of buttonFiles) {
-//	const button = require(`./buttons/${file}`);
-//	if (button.customId && typeof button.execute === 'function') {
-//		client.buttons.set(button.customId, button);
-//	}
-//}
+const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+
+for (const file of buttonFiles) {
+	const button = require(`./buttons/${file}`);
+	if (button.customId && typeof button.execute === 'function') {
+		client.buttons.set(button.customId, button);
+	}
+}
+
+const modalFiles = fs.readdirSync('./modals').filter(file => file.endsWith('.js'));
+
+for (const file of modalFiles) {
+	const modal = require(`./modals/${file}`);
+	if (modal.customId && typeof modal.execute === 'function') {
+		client.modals.set(modal.customId, modal);
+	}
+}
+
+const selectFiles = fs.readdirSync('./selectMenus').filter(file => file.endsWith('.js'));
+
+for (const file of selectFiles) {
+	const select = require(`./selectMenus/${file}`);
+	if (select.customId && typeof select.execute === 'function') {
+		client.selects.set(select.customId, select);
+	}
+}
 
 client.login(token);

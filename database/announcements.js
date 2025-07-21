@@ -1,7 +1,7 @@
 const { getCollection } = require('./index');
 
 async function addAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
-    const announcementCollection = getCollection("scheduledAnnouncements");
+    const announcementCollection = getCollection('scheduledAnnouncements');
 
     const newAnnouncement = {
         _id: announcementId,
@@ -19,7 +19,7 @@ async function addAnnouncement(announcementId, schedulerId, announcementName, ch
 }
 
 async function deleteAnnouncement(announcementId) {
-    const announcementCollection = getCollection("scheduledAnnouncements");
+    const announcementCollection = getCollection('scheduledAnnouncements');
 
     await announcementCollection.deleteOne({ _id: announcementId });
 
@@ -27,7 +27,7 @@ async function deleteAnnouncement(announcementId) {
 }
 
 async function editAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
-    const announcementCollection = getCollection("scheduledAnnouncements");
+    const announcementCollection = getCollection('scheduledAnnouncements');
 
     const updatedAnnouncement = {
         schedulerId,
@@ -44,11 +44,11 @@ async function editAnnouncement(announcementId, schedulerId, announcementName, c
 }
 
 async function getScheduledAnnouncements(guildId) {
-    const announcementCollection = getCollection("scheduledAnnouncements");
+    const announcementCollection = getCollection('scheduledAnnouncements');
 
     const announcements = await announcementCollection.find({ guildId }).toArray();
 
-    return announcements
+    return announcements;
 }
 
 module.exports = { addAnnouncement, deleteAnnouncement, editAnnouncement, getScheduledAnnouncements };

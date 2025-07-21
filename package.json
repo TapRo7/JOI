@@ -23,5 +23,11 @@
     "mongodb": "^6.17.0",
     "node-fetch": "^3.3.2",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "prettier": "^3.6.2"
   }
 }

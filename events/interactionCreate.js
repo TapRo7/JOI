@@ -44,7 +44,7 @@ module.exports = {
 				} else {
 					await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 				}
-				timestamps.delete(interaction.user.id)
+				timestamps.delete(interaction.user.id);
 			}
 		}
 		else if (interaction.isAutocomplete()) {
@@ -72,7 +72,47 @@ module.exports = {
 				await handler.execute(interaction);
 			}
 			catch (err) {
-				console.log(err)
+				console.log(err);
+				if (interaction.replied || interaction.deferred) {
+					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				} else {
+					await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				}
+			}
+		}
+		else if (interaction.isModalSubmit()) {
+			const handler = interaction.client.modals.get(interaction.customId);
+
+			if (!handler) {
+				console.log(`No handler found for Modal Custom ID: ${interaction.customId}`);
+				return;
+			}
+
+			try {
+				await handler.execute(interaction);
+			}
+			catch (err) {
+				console.log(err);
+				if (interaction.replied || interaction.deferred) {
+					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				} else {
+					await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+				}
+			}
+		}
+		else if (interaction.isStringSelectMenu() || interaction.isChannelSelectMenu()) {
+			const handler = interaction.client.selects.get(interaction.customId);
+
+			if (!handler) {
+				console.log(`No handler found for Select Custom ID: ${interaction.customId}`);
+				return;
+			}
+
+			try {
+				await handler.execute(interaction);
+			}
+			catch (err) {
+				console.log(err);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 				} else {
@@ -81,4 +121,4 @@ module.exports = {
 			}
 		}
 	}
-}
+};
