@@ -4,7 +4,6 @@ module.exports = {
     customId: 'announcementChannelSelect',
     async execute(interaction) {
         await interaction.deferUpdate();
-        await interaction.deleteReply();
 
         const selectedValue = interaction.values[0];
 
@@ -44,7 +43,7 @@ module.exports = {
         embedToUpdate.setFields(newFields);
 
         await interaction.editReply({ embeds: rebuiltEmbeds, message: setupMessageId });
-        const replyMessage = await interaction.followUp({ content: 'Announcement channel updated successfully.\nYou can see the channel mentioned in the embed above.', flags: MessageFlags.Ephemeral });
+        const replyMessage = await interaction.editReply({ content: 'Announcement channel updated successfully.\nYou can see the channel mentioned in the embed above.', components: [], flags: MessageFlags.Ephemeral });
 
         await new Promise(resolve => setTimeout(resolve, 5000));
         await interaction.deleteReply(replyMessage);
