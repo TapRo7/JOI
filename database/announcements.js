@@ -1,8 +1,8 @@
-const { getCollection } = require('./index');
+const { insertOne, deleteOne, updateOne, findAll } = require('./index');
+
+const COLLECTION_NAME = 'scheduledAnnouncements';
 
 async function addAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
-    const announcementCollection = getCollection('scheduledAnnouncements');
-
     const newAnnouncement = {
         _id: announcementId,
         schedulerId,
@@ -13,22 +13,14 @@ async function addAnnouncement(announcementId, schedulerId, announcementName, ch
         announcementText
     };
 
-    const result = await announcementCollection.insertOne(newAnnouncement);
-
-    return result.acknowledged;
+    return insertOne(COLLECTION_NAME, newAnnouncement);
 }
 
 async function deleteAnnouncement(announcementId) {
-    const announcementCollection = getCollection('scheduledAnnouncements');
-
-    const result = await announcementCollection.deleteOne({ _id: announcementId });
-
-    return result.deletedCount > 0;
+    return deleteOne(COLLECTION_NAME, { _id: announcementId });
 }
 
 async function editAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
-    const announcementCollection = getCollection('scheduledAnnouncements');
-
     const updatedAnnouncement = {
         schedulerId,
         announcementName,
@@ -38,17 +30,12 @@ async function editAnnouncement(announcementId, schedulerId, announcementName, c
         announcementText
     };
 
-    const result = await announcementCollection.updateOne({ _id: announcementId }, { $set: updatedAnnouncement });
-
-    return result.modifiedCount > 0;
+    return updateOne(COLLECTION_NAME, { _id: announcementId }, updatedAnnouncement);
 }
 
 async function getScheduledAnnouncements(guildId) {
-    const announcementCollection = getCollection('scheduledAnnouncements');
-
-    const announcements = await announcementCollection.find({ guildId }).toArray();
-
-    return announcements;
+    const all = await findAll(COLLECTION_NAME);
+    return all.filter(a => a.guildId === guildId);
 }
 
 module.exports = { addAnnouncement, deleteAnnouncement, editAnnouncement, getScheduledAnnouncements };

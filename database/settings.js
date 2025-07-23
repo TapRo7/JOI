@@ -1,86 +1,45 @@
-const { getCollection } = require('./index');
+const { insertOne, findOne, deleteOne, updateOne, findAll } = require('./index');
 
+// Guild Configuration Functions
 async function addGuildConfiguration(guildId, webhookUrl) {
-    const guildConfigurationsCollection = getCollection('guildConfigurations');
-
-    const newGuildConfig = {
-        guildId,
-        webhookUrl
-    };
-
-    const result = await guildConfigurationsCollection.insertOne(newGuildConfig);
-
-    return result.acknowledged;
+    return insertOne('guildConfigurations', { guildId, webhookUrl });
 }
 
 async function deleteGuildConfiguration(guildId) {
-    const guildConfigurationsCollection = getCollection('guildConfigurations');
-
-    const result = await guildConfigurationsCollection.deleteOne({ guildId });
-
-    return result.deletedCount > 0;
+    return deleteOne('guildConfigurations', { guildId });
 }
 
 async function editGuildConfiguration(guildId, webhookUrl) {
-    const guildConfigurationsCollection = getCollection('guildConfigurations');
-
-    const newGuildConfig = {
-        webhookUrl
-    };
-
-    const result = await guildConfigurationsCollection.updateOne({ guildId }, { $set: newGuildConfig });
-
-    return result.modifiedCount > 0;
+    return updateOne('guildConfigurations', { guildId }, { webhookUrl });
 }
 
 async function getGuildConfigurations() {
-    const guildConfigurationsCollection = getCollection('guildConfigurations');
-
-    const guildConfigurations = await guildConfigurationsCollection.find().toArray();
-
-    return guildConfigurations;
+    return findAll('guildConfigurations');
 }
 
+async function getGuildConfiguration(guildId) {
+    return await findOne('guildConfigurations', { guildId });
+}
+
+// User Configuration Functions
 async function addUserConfiguration(userId, timezone) {
-    const userConfigurationsCollection = getCollection('userConfigurations');
-
-    const newUserConfig = {
-        userId,
-        timezone
-    };
-
-    const result = await userConfigurationsCollection.insertOne(newUserConfig);
-
-    return result.acknowledged;
+    return insertOne('userConfigurations', { userId, timezone });
 }
 
 async function deleteUserConfiguration(userId) {
-    const userConfigurationsCollection = getCollection('userConfigurations');
-
-    const result = await userConfigurationsCollection.deleteOne({ userId });
-
-    return result.deletedCount > 0;
+    return deleteOne('userConfigurations', { userId });
 }
 
 async function editUserConfiguration(userId, timezone) {
-    const userConfigurationsCollection = getCollection('userConfigurations');
-
-    const newUserConfig = {
-        userId,
-        timezone
-    };
-
-    const result = await userConfigurationsCollection.updateOne({ userId }, { $set: newUserConfig });
-
-    return result.modifiedCount > 0;
+    return updateOne('userConfigurations', { userId }, { timezone });
 }
 
 async function getUserConfigurations() {
-    const userConfigurationsCollection = getCollection('userConfigurations');
-
-    const userConfigurations = await userConfigurationsCollection.find().toArray();
-
-    return userConfigurations;
+    return findAll('userConfigurations');
 }
 
-module.exports = { addGuildConfiguration, deleteGuildConfiguration, editGuildConfiguration, getGuildConfigurations, addUserConfiguration, deleteUserConfiguration, editUserConfiguration, getUserConfigurations };
+async function getUserConfiguration(userId) {
+    return await findOne('userConfigurations', { userId });
+}
+
+module.exports = { addGuildConfiguration, deleteGuildConfiguration, editGuildConfiguration, getGuildConfigurations, getGuildConfiguration, addUserConfiguration, deleteUserConfiguration, editUserConfiguration, getUserConfigurations, getUserConfiguration };

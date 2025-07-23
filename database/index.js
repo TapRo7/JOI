@@ -31,4 +31,33 @@ function getCollection(name) {
   return database.collection(name);
 }
 
+// CRUD Helpers
+async function insertOne(collectionName, document) {
+  const collection = getCollection(collectionName);
+  const result = await collection.insertOne(document);
+  return result.acknowledged;
+}
+
+async function findOne(collectionName, filter) {
+  const collection = getCollection(collectionName);
+  return await collection.findOne(filter);
+}
+
+async function deleteOne(collectionName, filter) {
+  const collection = getCollection(collectionName);
+  const result = await collection.deleteOne(filter);
+  return result.deletedCount > 0;
+}
+
+async function updateOne(collectionName, filter, update) {
+  const collection = getCollection(collectionName);
+  const result = await collection.updateOne(filter, { $set: update });
+  return result.modifiedCount > 0;
+}
+
+async function findAll(collectionName) {
+  const collection = getCollection(collectionName);
+  return await collection.find().toArray();
+}
+
 module.exports = { connectToDatabase, getCollection, setupDatabase };
