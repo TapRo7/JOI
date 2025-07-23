@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
-const announcementSchedule = require('./schedule');
-//const announcementDelete = require('./announcement/delete');
-//const announcementEdit = require('./announcement/edit');
+const announcementSchedule = require('./announcementSchedule');
+//const announcementDelete = require('./announcementDelete');
+//const announcementEdit = require('./announcementEdit');
 
 module.exports = {
 	cooldown: 60,

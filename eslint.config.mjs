@@ -13,6 +13,7 @@ export default [
         module: 'readonly',
         exports: 'readonly',
         require: 'readonly',
+        fetch: 'readonly'
       },
     },
     rules: {

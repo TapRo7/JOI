@@ -71,8 +71,8 @@ module.exports = {
 			try {
 				await handler.execute(interaction);
 			}
-			catch (err) {
-				console.log(err);
+			catch (error) {
+				console.log(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 				} else {
@@ -91,8 +91,8 @@ module.exports = {
 			try {
 				await handler.execute(interaction);
 			}
-			catch (err) {
-				console.log(err);
+			catch (error) {
+				console.log(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 				} else {
@@ -111,8 +111,8 @@ module.exports = {
 			try {
 				await handler.execute(interaction);
 			}
-			catch (err) {
-				console.log(err);
+			catch (error) {
+				console.log(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
 				} else {

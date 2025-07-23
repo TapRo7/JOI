@@ -21,7 +21,7 @@ async function addAnnouncement(announcementId, schedulerId, announcementName, ch
 async function deleteAnnouncement(announcementId) {
     const announcementCollection = getCollection('scheduledAnnouncements');
 
-    await announcementCollection.deleteOne({ _id: announcementId });
+    const result = await announcementCollection.deleteOne({ _id: announcementId });
 
     return result.deletedCount > 0;
 }
@@ -38,7 +38,7 @@ async function editAnnouncement(announcementId, schedulerId, announcementName, c
         announcementText
     };
 
-    await announcementCollection.updateOne({ _id: announcementId }, { $set: updatedAnnouncement });
+    const result = await announcementCollection.updateOne({ _id: announcementId }, { $set: updatedAnnouncement });
 
     return result.modifiedCount > 0;
 }

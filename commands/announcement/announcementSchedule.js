@@ -32,7 +32,7 @@ module.exports = async (interaction) => {
                 await pipeline(response.body, fileStream);
             }
         } catch (error) {
-            console.error(err);
+            console.error(error);
             return await interaction.editReply('❌ Failed to save one or more files.');
         }
     }
