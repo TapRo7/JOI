@@ -10,6 +10,7 @@ export default [
       quotes: ['error', 'single'],
       'no-var': 'error',
       'prefer-const': 'warn',
+      'camelcase': ['error', { properties: 'always' }],
     },
   },
 ];
