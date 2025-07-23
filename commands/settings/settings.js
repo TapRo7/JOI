@@ -25,10 +25,8 @@ module.exports = {
         switch (sub) {
             case 'server':
                 return await settingsServer(interaction);
-            //case 'delete':
-            //	return await announcementDelete(interaction);
-            //case 'edit':
-            //	return await announcementEdit(interaction);
+            //case 'user':
+            //	return await settingsUser(interaction);
             default:
                 return await interaction.editReply({ content: 'Unknown subcommand.', flags: MessageFlags.Ephemeral });
         }

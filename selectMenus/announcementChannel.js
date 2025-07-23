@@ -10,7 +10,13 @@ module.exports = {
         const channel = interaction.client.channels.cache.get(selectedValue);
 
         if (!channel) {
-            return await interaction.followUp({ content: 'The selected channel could not be found in the bot\'s cache, please ensure you\'re selecting a valid channel.', flags: MessageFlags.Ephemeral });
+            return await interaction.editReply({ content: 'The selected channel could not be found in the bot\'s cache, please ensure you\'re selecting a valid channel.', components: [], flags: MessageFlags.Ephemeral });
+        }
+
+        const channelPermissions = channel.permissionsFor(interaction.guild.members.me);
+
+        if (!channelPermissions.has(['ManageWebhooks', 'SendMessages'])) {
+            return await interaction.editReply({ content: 'I do not have the required permissions in the selected channel.\nPlease ensure I have `Manage Webhooks` and `Send Messages` permissions in the selected channel.', components: [], flags: MessageFlags.Ephemeral });
         }
 
         const setupMessageId = interaction.message.reference.messageId;
