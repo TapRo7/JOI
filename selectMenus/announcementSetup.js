@@ -26,7 +26,7 @@ const announcementChannelRow = new ActionRowBuilder().addComponents(announcement
 module.exports = {
     customId: 'announcementSetupSelect',
     async execute(interaction) {
-        selectedValue = interaction.values[0];
+        const selectedValue = interaction.values[0];
 
         if (selectedValue === undefined) {
             await interaction.deferUpdate();

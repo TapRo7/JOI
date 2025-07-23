@@ -23,14 +23,14 @@ module.exports = {
             rebuiltEmbeds[0] = announcementTextEmbed;
         }
 
-        embedToUpdate = rebuiltEmbeds[1];
+        const embedToUpdate = rebuiltEmbeds[1];
         const oldFields = embedToUpdate.data.fields;
 
         const newFields = oldFields.map(field => {
             if (field.name.includes('Announcement Text')) {
                 return {
                     name: field.name,
-                    value: 'Announcement text is set! Preview Embed can be seen above. ✅',
+                    value: '- Announcement text is set! Preview Embed can be seen above. ✅',
                     inline: field.inline
                 };
             }
@@ -40,6 +40,9 @@ module.exports = {
         embedToUpdate.setFields(newFields);
 
         await interaction.editReply({ embeds: rebuiltEmbeds });
-        await interaction.followUp({ content: 'Announcement field updated successfully.\nThere is a preview of the announcement added in the top embed, you can review it, and make changes by selecting the Announcement Text option again if you wish to do so.', flags: MessageFlags.Ephemeral });
+        const replyMessage = await interaction.followUp({ content: 'Announcement field updated successfully.\nThere is a preview of the announcement added in the top embed, you can review it, and make changes by selecting the Announcement Text option again if you wish to do so.', flags: MessageFlags.Ephemeral });
+
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await interaction.deleteReply(replyMessage);
     },
 };
