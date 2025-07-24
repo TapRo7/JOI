@@ -1,4 +1,4 @@
-const { insertOne, deleteOne, updateOne, findAll } = require('./index');
+const { insertOne, deleteOne, updateOne, findAll, find } = require('./index');
 
 const COLLECTION_NAME = 'scheduledAnnouncements';
 
@@ -33,9 +33,12 @@ async function editAnnouncement(announcementId, schedulerId, announcementName, c
     return updateOne(COLLECTION_NAME, { _id: announcementId }, updatedAnnouncement);
 }
 
-async function getScheduledAnnouncements(guildId) {
-    const all = await findAll(COLLECTION_NAME);
-    return all.filter(a => a.guildId === guildId);
+async function getScheduledAnnouncements() {
+    return findAll(COLLECTION_NAME);
 }
 
-module.exports = { addAnnouncement, deleteAnnouncement, editAnnouncement, getScheduledAnnouncements };
+async function getGuildScheduledAnnouncements(guildId) {
+    return find(COLLECTION_NAME, { guildId });
+}
+
+module.exports = { addAnnouncement, deleteAnnouncement, editAnnouncement, getScheduledAnnouncements, getGuildScheduledAnnouncements };
