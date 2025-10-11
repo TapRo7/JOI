@@ -1,4 +1,4 @@
-const { EmbedBuilder, MessageFlags } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
     customId: 'announcementChannelSelect',
@@ -10,13 +10,13 @@ module.exports = {
         const channel = interaction.client.channels.cache.get(selectedValue);
 
         if (!channel) {
-            return await interaction.editReply({ content: 'The selected channel could not be found in the bot\'s cache, please ensure you\'re selecting a valid channel.', components: [], flags: MessageFlags.Ephemeral });
+            return await interaction.editReply({ content: 'The selected channel could not be found in the bot\'s cache, please ensure you\'re selecting a valid channel.', components: [] });
         }
 
         const channelPermissions = channel.permissionsFor(interaction.guild.members.me);
 
-        if (!channelPermissions.has(['ManageWebhooks', 'SendMessages'])) {
-            return await interaction.editReply({ content: 'I do not have the required permissions in the selected channel.\nPlease ensure I have `Manage Webhooks` and `Send Messages` permissions in the selected channel.', components: [], flags: MessageFlags.Ephemeral });
+        if (!channelPermissions.has('ManageWebhooks')) {
+            return await interaction.editReply({ content: 'I do not have the required permissions in the selected channel.\nPlease ensure I have `Manage Webhooks` permissions in the selected channel.', components: [] });
         }
 
         const setupMessageId = interaction.message.reference.messageId;
@@ -49,7 +49,7 @@ module.exports = {
         embedToUpdate.setFields(newFields);
 
         await interaction.editReply({ embeds: rebuiltEmbeds, message: setupMessageId });
-        const replyMessage = await interaction.editReply({ content: 'Announcement channel updated successfully.\nYou can see the channel mentioned in the embed above.', components: [], flags: MessageFlags.Ephemeral });
+        const replyMessage = await interaction.editReply({ content: 'Announcement channel updated successfully.\nYou can see the channel mentioned in the embed above.', components: [] });
 
         await new Promise(resolve => setTimeout(resolve, 5000));
         await interaction.deleteReply(replyMessage);

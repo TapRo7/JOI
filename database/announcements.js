@@ -13,11 +13,11 @@ async function addAnnouncement(announcementId, schedulerId, announcementName, ch
         announcementText
     };
 
-    return insertOne(COLLECTION_NAME, newAnnouncement);
+    return await insertOne(COLLECTION_NAME, newAnnouncement);
 }
 
 async function deleteAnnouncement(announcementId) {
-    return deleteOne(COLLECTION_NAME, { _id: announcementId });
+    return await deleteOne(COLLECTION_NAME, { _id: announcementId });
 }
 
 async function editAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
@@ -30,15 +30,15 @@ async function editAnnouncement(announcementId, schedulerId, announcementName, c
         announcementText
     };
 
-    return updateOne(COLLECTION_NAME, { _id: announcementId }, updatedAnnouncement);
+    return await updateOne(COLLECTION_NAME, { _id: announcementId }, updatedAnnouncement);
 }
 
 async function getScheduledAnnouncements() {
-    return findAll(COLLECTION_NAME);
+    return await findAll(COLLECTION_NAME);
 }
 
 async function getGuildScheduledAnnouncements(guildId) {
-    return find(COLLECTION_NAME, { guildId });
+    return await find(COLLECTION_NAME, { guildId });
 }
 
 module.exports = { addAnnouncement, deleteAnnouncement, editAnnouncement, getScheduledAnnouncements, getGuildScheduledAnnouncements };

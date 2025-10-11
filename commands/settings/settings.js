@@ -4,7 +4,7 @@ const settingsServer = require('./settingsServer');
 const settingsUser = require('./settingsUser');
 
 module.exports = {
-    cooldown: 60,
+    cooldown: 30,
     data: new SlashCommandBuilder()
         .setName('settings')
         .setDescription('Bot Settings')
@@ -22,8 +22,7 @@ module.exports = {
         ),
 
     async autocomplete(interaction) {
-        const focusedValue = interaction.options.getFocused();
-        console.log(focusedValue);
+        const focusedValue = interaction.options.getFocused().toLowerCase();
         const choices = interaction.client.timezones;
 
         const filtered = choices

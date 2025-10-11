@@ -1,5 +1,6 @@
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
+const { criticalErrorNotify } = require('../utils/errorNotifier');
 
 const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 const databaseClient = new MongoClient(uri);
@@ -7,11 +8,44 @@ const requiredCollections = ['scheduledAnnouncements', 'guildConfigurations', 'u
 
 let database;
 
-async function connectToDatabase() {
-    await databaseClient.connect();
-    database = databaseClient.db('botDatabase');
-    console.log('Connected to MongoDB');
+async function connectToDatabase(retries = 5, delay = 2000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await databaseClient.connect();
+            database = databaseClient.db('botDatabase');
+
+            if (databaseClient.listenerCount('close') === 0) {
+                databaseClient.on('close', async () => {
+                    console.warn('MongoDB connection closed! Attempting reconnect...');
+                    try {
+                        await connectToDatabase();
+                        console.log('Reconnected to MongoDB!');
+                    } catch (err) {
+                        console.error('Reconnection failed:', err);
+                        await criticalErrorNotify(
+                            'Critical error in trying to connect to database on connection close'
+                        );
+                        process.exit(1);
+                    }
+                });
+            }
+
+            console.log('Connected to MongoDB');
+            return database;
+        } catch (err) {
+            console.error(`MongoDB connection failed (attempt ${i + 1}/${retries}):`, err.message);
+
+            if (i < retries - 1) {
+                console.log(`Retrying in ${delay / 1000} seconds...`);
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2;
+            } else {
+                throw new Error('MongoDB connection failed after multiple attempts');
+            }
+        }
+    }
 }
+
 
 async function setupDatabase() {
     const collections = await database.listCollections({}, { nameOnly: true }).toArray();
@@ -28,6 +62,9 @@ async function setupDatabase() {
 }
 
 function getCollection(name) {
+    if (!databaseClient || !database) {
+        throw new Error(`Database not initialized. Tried to access "${name}" before connectToDatabase().`);
+    }
     return database.collection(name);
 }
 
@@ -38,9 +75,9 @@ async function insertOne(collectionName, document) {
     return result.acknowledged;
 }
 
-async function findOne(collectionName, filter) {
+async function findOne(collectionName, filter, options = {}) {
     const collection = getCollection(collectionName);
-    return await collection.findOne(filter);
+    return await collection.findOne(filter, options);
 }
 
 async function deleteOne(collectionName, filter) {
@@ -49,10 +86,17 @@ async function deleteOne(collectionName, filter) {
     return result.deletedCount > 0;
 }
 
-async function updateOne(collectionName, filter, update) {
+async function updateOne(collectionName, filter, update, upsert = false) {
     const collection = getCollection(collectionName);
-    const result = await collection.updateOne(filter, { $set: update });
-    return result.modifiedCount > 0;
+    const result = await collection.updateOne(filter, { $set: update }, { upsert: upsert });
+
+    if (result.upsertedCount > 0) {
+        return result.upsertedCount;
+    } else if (result.modifiedCount > 0) {
+        return result.modifiedCount;
+    } else {
+        return 0;
+    }
 }
 
 async function findAll(collectionName) {

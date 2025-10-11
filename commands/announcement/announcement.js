@@ -5,7 +5,7 @@ const announcementSchedule = require('./announcementSchedule');
 //const announcementEdit = require('./announcementEdit');
 
 module.exports = {
-	cooldown: 60,
+	cooldown: 30,
 	data: new SlashCommandBuilder()
 		.setName('announcement')
 		.setDescription('Manage scheduled announcements')

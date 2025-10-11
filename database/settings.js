@@ -4,16 +4,16 @@ const GUILD_COLLECTION = 'guildConfigurations';
 const USER_COLLECTION = 'userConfigurations';
 
 // Guild Configuration Functions
-async function addGuildConfiguration(guildId, webhookUrl) {
-    return insertOne(GUILD_COLLECTION, { guildId, webhookUrl });
+async function addGuildConfiguration(guildId, webhookUrl, errorChannelId) {
+    return insertOne(GUILD_COLLECTION, { guildId, webhookUrl, errorChannelId });
 }
 
 async function deleteGuildConfiguration(guildId) {
     return deleteOne(GUILD_COLLECTION, { guildId });
 }
 
-async function editGuildConfiguration(guildId, webhookUrl) {
-    return updateOne(GUILD_COLLECTION, { guildId }, { webhookUrl });
+async function editGuildConfiguration(guildId, webhookUrl, errorChannelId, upsert) {
+    return updateOne(GUILD_COLLECTION, { guildId }, { webhookUrl, errorChannelId }, upsert);
 }
 
 async function getGuildConfigurations() {
@@ -33,8 +33,8 @@ async function deleteUserConfiguration(userId) {
     return deleteOne(USER_COLLECTION, { userId });
 }
 
-async function editUserConfiguration(userId, timezone) {
-    return updateOne(USER_COLLECTION, { userId }, { timezone });
+async function editUserConfiguration(userId, timezone, upsert) {
+    return updateOne(USER_COLLECTION, { userId }, { timezone }, upsert);
 }
 
 async function getUserConfigurations() {
@@ -45,4 +45,11 @@ async function getUserConfiguration(userId) {
     return await findOne(USER_COLLECTION, { userId });
 }
 
-module.exports = { addGuildConfiguration, deleteGuildConfiguration, editGuildConfiguration, getGuildConfigurations, getGuildConfiguration, addUserConfiguration, deleteUserConfiguration, editUserConfiguration, getUserConfigurations, getUserConfiguration };
+// Other Helper Functions
+async function checkSettingsExist(userId, guildId) {
+    const userExists = await findOne(USER_COLLECTION, { userId }, { projection: { _id: 1 } });
+    const guildExists = await findOne(GUILD_COLLECTION, { guildId }, { projection: { _id: 1 } });
+    return { userExists, guildExists };
+}
+
+module.exports = { addGuildConfiguration, deleteGuildConfiguration, editGuildConfiguration, getGuildConfigurations, getGuildConfiguration, addUserConfiguration, deleteUserConfiguration, editUserConfiguration, getUserConfigurations, getUserConfiguration, checkSettingsExist };
