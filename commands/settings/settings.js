@@ -11,7 +11,7 @@ module.exports = {
         .addSubcommand(subcommand => subcommand
             .setName('server')
             .setDescription('Configure the announcer profile')
-            .addStringOption(option => option.setName('announcer_name').setDescription('Enter the name the announcement bot should have').setRequired(true))
+            .addStringOption(option => option.setName('announcer_name').setDescription('Enter the name the announcement bot should have').setMaxLength(80).setRequired(true))
             .addAttachmentOption(option => option.setName('announcer_profile').setDescription('Attach the profile picture the announcement bot should have').setRequired(true))
             .addChannelOption(option => option.setName('error_channel').setDescription('Please select a channel where errors with scheduled announcements will be sent').setRequired(true))
         )

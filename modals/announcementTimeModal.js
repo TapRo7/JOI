@@ -37,7 +37,7 @@ module.exports = {
         const minute = localMoment.format('mm');
         const date = localMoment.format('YYYY-MM-DD');
 
-        const formattedLine = `- ${hour12}:${minute} ${period} (${hour24}:${minute}) - ${date} - ${userTimezone} Timezone\n- Timestamp: <t:${epochTimestamp}:F>`;
+        const formattedLine = `- **Time:** ${hour12}:${minute} ${period} (${hour24}:${minute}) | ${userTimezone} Timezone\n- **Date:** ${date}\n- **Timestamp:** <t:${epochTimestamp}:F>`;
 
         let embedToUpdate;
 

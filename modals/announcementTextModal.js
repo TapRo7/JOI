@@ -30,7 +30,7 @@ module.exports = {
             if (field.name.includes('Announcement Text')) {
                 return {
                     name: field.name,
-                    value: '- Announcement text is set! Preview Embed can be seen above. ✅',
+                    value: '- Announcement text is set! Preview Embed can be seen above.',
                     inline: field.inline
                 };
             }

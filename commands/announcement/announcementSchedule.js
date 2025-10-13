@@ -5,6 +5,46 @@ const { v4: uuidv4 } = require('uuid');
 const { checkSettingsExist } = require('../../database/settings');
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 
+const announcementSetupSelect = new StringSelectMenuBuilder()
+    .setCustomId('announcementSetupSelect')
+    .setPlaceholder('⚙️ Setup your Annoncement!')
+    .setMaxValues(1)
+    .setMinValues(0)
+    .addOptions(
+        new StringSelectMenuOptionBuilder()
+            .setLabel('Set Announcement Text')
+            .setEmoji('✏️')
+            .setValue('setAnnouncementText')
+            .setDescription('Set the Text for the Announcement'),
+
+        new StringSelectMenuOptionBuilder()
+            .setLabel('Set Announcement Channel')
+            .setEmoji('#️⃣')
+            .setValue('setAnnouncementChannel')
+            .setDescription('Set the Channel for the Announcement'),
+
+        new StringSelectMenuOptionBuilder()
+            .setLabel('Set Announcement Date & Time')
+            .setEmoji('🕰️')
+            .setValue('setAnnouncementTime')
+            .setDescription('Set the Date & Time for the Announcement')
+    );
+
+const buildEmbedRow = new ActionRowBuilder().addComponents(announcementSetupSelect);
+
+const announcementConfirmButton = new ButtonBuilder()
+    .setCustomId('announcementConfirmButton')
+    .setLabel('Confirm')
+    .setStyle(ButtonStyle.Success);
+
+const announcementCancelButton = new ButtonBuilder()
+    .setCustomId('announcementCancelButton')
+    .setLabel('Cancel')
+    .setStyle(ButtonStyle.Danger);
+
+const confirmCancelRow = new ActionRowBuilder().addComponents(announcementConfirmButton, announcementCancelButton);
+
+
 module.exports = async (interaction) => {
     const { userExists, guildExists } = await checkSettingsExist(interaction.user.id, interaction.guild.id);
 
@@ -58,49 +98,11 @@ module.exports = async (interaction) => {
         .setDescription('Setup your announcement! Use the Drop-Down below to set the announcement fields.')
         .setFooter({ text: `${attachments.length} Attachments uploaded` })
         .addFields(
-            { name: '✏️ Announcement Text', value: 'Not Set ❌', inline: false },
-            { name: '#️⃣ Announcement Channel', value: 'Not Set ❌', inline: false },
-            { name: '🗓️ Announcement Date & Time', value: 'Not Set ❌', inline: false }
+            { name: '🪪 Announcement ID', value: `- ${announcementId}`, inline: false },
+            { name: '✏️ Announcement Text', value: '- Not Set ❌', inline: false },
+            { name: '#️⃣ Announcement Channel', value: '- Not Set ❌', inline: false },
+            { name: '🗓️ Announcement Date & Time', value: '- Not Set ❌', inline: false }
         );
-
-    const announcementSetupSelect = new StringSelectMenuBuilder()
-        .setCustomId('announcementSetupSelect')
-        .setPlaceholder('⚙️ Setup your Annoncement!')
-        .setMaxValues(1)
-        .setMinValues(0)
-        .addOptions(
-            new StringSelectMenuOptionBuilder()
-                .setLabel('Set Announcement Text')
-                .setEmoji('✏️')
-                .setValue('setAnnouncementText')
-                .setDescription('Set the Text for the Announcement'),
-
-            new StringSelectMenuOptionBuilder()
-                .setLabel('Set Announcement Channel')
-                .setEmoji('#️⃣')
-                .setValue('setAnnouncementChannel')
-                .setDescription('Set the Channel for the Announcement'),
-
-            new StringSelectMenuOptionBuilder()
-                .setLabel('Set Announcement Date & Time')
-                .setEmoji('🕰️')
-                .setValue('setAnnouncementTime')
-                .setDescription('Set the Date & Time for the Announcement')
-        );
-
-    const buildEmbedRow = new ActionRowBuilder().addComponents(announcementSetupSelect);
-
-    const announcementConfirmButton = new ButtonBuilder()
-        .setCustomId('announcementConfirmButton')
-        .setLabel('Confirm')
-        .setStyle(ButtonStyle.Success);
-
-    const announcementCancelButton = new ButtonBuilder()
-        .setCustomId('announcementCancelButton')
-        .setLabel('Cancel')
-        .setStyle(ButtonStyle.Danger);
-
-    const confirmCancelRow = new ActionRowBuilder().addComponents(announcementConfirmButton, announcementCancelButton);
 
     await interaction.editReply({ content: '', embeds: [announcementSetupEmbed], components: [buildEmbedRow, confirmCancelRow] });
 };

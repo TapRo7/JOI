@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
     customId: 'announcementChannelSelect',
@@ -15,8 +15,8 @@ module.exports = {
 
         const channelPermissions = channel.permissionsFor(interaction.guild.members.me);
 
-        if (!channelPermissions.has('ManageWebhooks')) {
-            return await interaction.editReply({ content: 'I do not have the required permissions in the selected channel.\nPlease ensure I have `Manage Webhooks` permissions in the selected channel.', components: [] });
+        if (!channelPermissions.has(PermissionFlagsBits.ManageWebhooks | PermissionFlagsBits.ViewChannel)) {
+            return await interaction.editReply({ content: 'I do not have the required permissions in the selected channel.\nPlease ensure I have `Manage Webhooks` and `View Channel` permissions in the selected channel.', components: [] });
         }
 
         const setupMessageId = interaction.message.reference.messageId;
@@ -39,7 +39,7 @@ module.exports = {
             if (field.name.includes('Announcement Channel')) {
                 return {
                     name: field.name,
-                    value: `- <#${selectedValue}> ✅`,
+                    value: `- <#${selectedValue}>`,
                     inline: field.inline
                 };
             }
