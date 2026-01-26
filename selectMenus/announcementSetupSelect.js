@@ -1,4 +1,4 @@
-const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ChannelSelectMenuBuilder, ChannelType, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, LabelBuilder } = require('discord.js');
+const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ChannelSelectMenuBuilder, ChannelType, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, LabelBuilder, FileUploadBuilder } = require('discord.js');
 const { getUserConfiguration } = require('../database/settings');
 
 // ANNOUNCEMENT TEXT SETUP
@@ -104,6 +104,44 @@ module.exports = {
         }
         else if (selectedValue === 'setAnnouncementText') {
             return await interaction.showModal(announcementTextModal);
+        }
+        else if (selectedValue === 'addAnnouncementMedia') {
+            let setupEmbed;
+
+            if (interaction.message.embeds.length == 2) {
+                setupEmbed = interaction.message.embeds[1];
+            } else {
+                setupEmbed = interaction.message.embeds[0];
+            }
+
+            const match = setupEmbed.footer.text.match(/\d+/);
+            const count = match ? Number(match[0]) : 0;
+            const totalAllowed = 10 - count;
+
+            if (!totalAllowed) {
+                const replyMessage = await interaction.reply({ content: 'More media cannot be added! Maximum 10 media attachments reached.', flags: MessageFlags.Ephemeral });
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                return await replyMessage.delete();
+            }
+
+            const announcementMediaModal = new ModalBuilder()
+                .setCustomId('announcementMediaModal')
+                .setTitle('Add Announcement Media');
+
+            const announcementMediaInput = new FileUploadBuilder()
+                .setCustomId('announcementMediaInput')
+                .setRequired(true)
+                .setMinValues(1)
+                .setMaxValues(totalAllowed);
+
+            const announcementMediaLabel = new LabelBuilder()
+                .setLabel('Announcement Media')
+                .setDescription(`Upload up to ${totalAllowed} Files.`)
+                .setFileUploadComponent(announcementMediaInput);
+
+            announcementMediaModal.addLabelComponents(announcementMediaLabel);
+
+            return await interaction.showModal(announcementMediaModal);
         }
         else if (selectedValue === 'setAnnouncementTime') {
             const { timezone } = await getUserConfiguration(interaction.user.id);

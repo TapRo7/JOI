@@ -15,7 +15,7 @@ module.exports = {
 
         const channelPermissions = channel.permissionsFor(interaction.guild.members.me);
 
-        if (!channelPermissions.has(PermissionFlagsBits.ManageWebhooks | PermissionFlagsBits.ViewChannel)) {
+        if (!channelPermissions.has([PermissionFlagsBits.ManageWebhooks, PermissionFlagsBits.ViewChannel])) {
             return await interaction.editReply({ content: 'I do not have the required permissions in the selected channel.\nPlease ensure I have `Manage Webhooks` and `View Channel` permissions in the selected channel.', components: [] });
         }
 
