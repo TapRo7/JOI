@@ -16,6 +16,8 @@ client.selects = new Map();
 client.timezones = require('./timezones.json');
 client.userTimezones = new Map();
 
+client.failedAnnouncements = new Map();
+
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 

@@ -1,5 +1,6 @@
-const { PermissionFlagsBits, WebhookClient } = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 const { editGuildConfiguration, getGuildConfiguration } = require('../../database/settings');
+const { encryptToken, decryptToken } = require('../../utils/tokenEncryption');
 
 const imageUrlRegex = /\.(png|jpe?g|webp)(\?.*)?$/i;
 
@@ -29,10 +30,10 @@ module.exports = async (interaction) => {
     const oldConfiguration = await getGuildConfiguration(interaction.guild.id);
 
     if (oldConfiguration) {
-        const oldWebhookClient = new WebhookClient({ url: oldConfiguration.webhookUrl });
-
         try {
-            webhook = await interaction.client.fetchWebhook(oldWebhookClient.id, oldWebhookClient.token);
+
+            const webhookToken = decryptToken(oldConfiguration.encryptionData, oldConfiguration.webhookId);
+            webhook = await interaction.client.fetchWebhook(oldConfiguration.webhookId, webhookToken);
 
             await webhook.edit({
                 name: webhookProfileName,
@@ -55,7 +56,8 @@ module.exports = async (interaction) => {
         });
     }
 
-    await editGuildConfiguration(interaction.guild.id, webhook.url, errorChannel.id, true);
+    const encryptionData = encryptToken(webhook.token, webhook.id);
+    await editGuildConfiguration(interaction.guild.id, webhook.id, encryptionData, errorChannel.id, true);
 
     await interaction.editReply({ content: `Guild Configurations have been set successfully.\n- Announcer Name: ${webhookProfileName}\n- Error Channel: <#${errorChannel.id}>\n- Announcer Profile Picture Attached Below`, files: [webhookProfileUrl] });
 };

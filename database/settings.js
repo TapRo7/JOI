@@ -4,16 +4,16 @@ const GUILD_COLLECTION = 'guildConfigurations';
 const USER_COLLECTION = 'userConfigurations';
 
 // Guild Configuration Functions
-async function addGuildConfiguration(guildId, webhookUrl, errorChannelId) {
-    return insertOne(GUILD_COLLECTION, { guildId, webhookUrl, errorChannelId });
+async function addGuildConfiguration(guildId, webhookId, encryptionData, errorChannelId) {
+    return insertOne(GUILD_COLLECTION, { guildId, webhookId, encryptionData, errorChannelId });
 }
 
 async function deleteGuildConfiguration(guildId) {
     return deleteOne(GUILD_COLLECTION, { guildId });
 }
 
-async function editGuildConfiguration(guildId, webhookUrl, errorChannelId, upsert) {
-    return updateOne(GUILD_COLLECTION, { guildId }, { webhookUrl, errorChannelId }, upsert);
+async function editGuildConfiguration(guildId, webhookId, encryptionData, errorChannelId, upsert) {
+    return updateOne(GUILD_COLLECTION, { guildId }, { webhookId, encryptionData, errorChannelId }, upsert);
 }
 
 async function getGuildConfigurations() {

@@ -13,7 +13,8 @@ export default [
                 module: 'readonly',
                 exports: 'readonly',
                 require: 'readonly',
-                fetch: 'readonly'
+                fetch: 'readonly',
+                Buffer: 'readonly'
             },
         },
         rules: {

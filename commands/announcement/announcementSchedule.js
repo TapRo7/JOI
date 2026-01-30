@@ -66,36 +66,6 @@ module.exports = async (interaction) => {
     const announcementId = uuidv4();
     const announcementName = interaction.options.getString('name');
 
-    //const attachments = [];
-    //for (let i = 1; i <= 10; i++) {
-    //    const file = interaction.options.getAttachment(`file_${i}`);
-    //    if (file) attachments.push(file);
-    //}
-    //
-    //if (attachments.length !== 0) {
-    //    await interaction.editReply({ content: 'Saving uploaded files...' });
-    //
-    //    const baseDir = path.join(__dirname, '..', '..', 'Attachments', announcementId);
-    //    fs.mkdirSync(baseDir, { recursive: true });
-    //
-    //    try {
-    //        for (const attachment of attachments) {
-    //            const fileUrl = attachment.url;
-    //            const fileName = attachment.name;
-    //            const savePath = path.join(baseDir, fileName);
-    //
-    //            const response = await fetch(fileUrl);
-    //            if (!response.ok) throw new Error(`Failed to fetch ${fileName}: ${response.statusText}`);
-    //
-    //            const fileStream = fs.createWriteStream(savePath);
-    //            await pipeline(response.body, fileStream);
-    //        }
-    //    } catch (error) {
-    //        console.error(error);
-    //        return await interaction.editReply('❌ Failed to save one or more files.');
-    //    }
-    //}
-
     const announcementSetupEmbed = new EmbedBuilder()
         .setColor(0x00008B)
         .setTitle('Setup Announcement')

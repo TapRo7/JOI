@@ -16,7 +16,7 @@ module.exports = {
 				option => option
 					.setName('name')
 					.setDescription('Set a unique name for the announcement')
-					.setMaxLength(100)
+					.setMaxLength(50)
 					.setRequired(true)
 			)
 		)

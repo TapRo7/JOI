@@ -6,6 +6,7 @@ async function addAnnouncement(announcementId, schedulerId, announcementName, ch
     const newAnnouncement = {
         _id: announcementId,
         schedulerId,
+        editorId: null,
         announcementName,
         channelId,
         guildId,
@@ -20,9 +21,9 @@ async function deleteAnnouncement(announcementId) {
     return await deleteOne(COLLECTION_NAME, { _id: announcementId });
 }
 
-async function editAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
+async function editAnnouncement(announcementId, editorId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
     const updatedAnnouncement = {
-        schedulerId,
+        editorId,
         announcementName,
         channelId,
         guildId,
@@ -33,12 +34,13 @@ async function editAnnouncement(announcementId, schedulerId, announcementName, c
     return await updateOne(COLLECTION_NAME, { _id: announcementId }, updatedAnnouncement);
 }
 
-async function getScheduledAnnouncements() {
-    return await findAll(COLLECTION_NAME);
+async function getDueAnnouncements() {
+    const nowEpoch = Math.floor(Date.now() / 1000);
+    return await find(COLLECTION_NAME, { sendAtEpoch: { $lte: nowEpoch } });
 }
 
 async function getGuildScheduledAnnouncements(guildId) {
     return await find(COLLECTION_NAME, { guildId });
 }
 
-module.exports = { addAnnouncement, deleteAnnouncement, editAnnouncement, getScheduledAnnouncements, getGuildScheduledAnnouncements };
+module.exports = { addAnnouncement, deleteAnnouncement, editAnnouncement, getDueAnnouncements, getGuildScheduledAnnouncements };

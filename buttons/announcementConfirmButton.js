@@ -41,7 +41,8 @@ module.exports = {
                 announcementChannelId = field.value.match(/<#(\d+)>/)[1];
             }
             else if (field.name.includes('Announcement Date')) {
-                announcementEpochTime = field.value.match(/<t:(\d+):[a-zA-Z]>/)[1];
+                const epochString = field.value.match(/<t:(\d+):[a-zA-Z]>/)[1];
+                announcementEpochTime = parseInt(epochString, 10);
             }
         }
 
