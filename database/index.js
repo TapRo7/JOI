@@ -4,7 +4,7 @@ const { criticalErrorNotify } = require('../utils/errorNotifier');
 
 const uri = process.env.MONGO_URI || 'mongodb://localhost:27017';
 const databaseClient = new MongoClient(uri);
-const requiredCollections = ['scheduledAnnouncements', 'guildConfigurations', 'userConfigurations'];
+const requiredCollections = ['scheduledAnnouncements', 'guildConfigurations', 'userConfigurations', 'backupAnnouncements'];
 
 let database;
 

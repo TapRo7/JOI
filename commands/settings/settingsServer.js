@@ -31,7 +31,6 @@ module.exports = async (interaction) => {
 
     if (oldConfiguration) {
         try {
-
             const webhookToken = decryptToken(oldConfiguration.encryptionData, oldConfiguration.webhookId);
             webhook = await interaction.client.fetchWebhook(oldConfiguration.webhookId, webhookToken);
 

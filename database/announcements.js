@@ -1,6 +1,7 @@
-const { insertOne, deleteOne, updateOne, findAll, find } = require('./index');
+const { insertOne, deleteOne, updateOne, find, findOne } = require('./index');
 
 const COLLECTION_NAME = 'scheduledAnnouncements';
+const BACKUP_COLLECTION_NAME = 'backupAnnouncements';
 
 async function addAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
     const newAnnouncement = {
@@ -11,27 +12,41 @@ async function addAnnouncement(announcementId, schedulerId, announcementName, ch
         channelId,
         guildId,
         sendAtEpoch,
-        announcementText
+        announcementText,
+        archived: false
     };
 
     return await insertOne(COLLECTION_NAME, newAnnouncement);
 }
 
-async function deleteAnnouncement(announcementId) {
-    return await deleteOne(COLLECTION_NAME, { _id: announcementId });
+async function deleteAnnouncement(announcementId, backup = false) {
+    if (backup) {
+        const doc = await findOne(COLLECTION_NAME, { _id: announcementId });
+
+        if (!doc) {
+            throw new Error(`Announcement ${announcementId} not found for backup`);
+        }
+
+        const backupDoc = {
+            ...doc,
+            backUpEpoch: Math.floor(Date.now() / 1000)
+        };
+
+        await insertOne(BACKUP_COLLECTION_NAME, backupDoc);
+    }
+
+    return deleteOne(COLLECTION_NAME, { _id: announcementId });
 }
 
-async function editAnnouncement(announcementId, editorId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
-    const updatedAnnouncement = {
-        editorId,
-        announcementName,
-        channelId,
-        guildId,
-        sendAtEpoch,
-        announcementText
-    };
 
-    return await updateOne(COLLECTION_NAME, { _id: announcementId }, updatedAnnouncement);
+async function editAnnouncement(announcementId, updates) {
+    const $set = Object.fromEntries(
+        Object.entries(updates).filter(([, v]) => v !== undefined)
+    );
+
+    if (!Object.keys($set).length) return null;
+
+    return updateOne(COLLECTION_NAME, { _id: announcementId }, { $set });
 }
 
 async function getDueAnnouncements() {
