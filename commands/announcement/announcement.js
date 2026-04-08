@@ -19,6 +19,15 @@ module.exports = {
 					.setMaxLength(50)
 					.setRequired(true)
 			)
+			.addStringOption(
+				option => option
+					.setName('visible')
+					.setDescription('If Yes, the menu will be visible to everyone')
+					.setChoices(
+						{ name: 'Yes', value: 'Yes' }
+					)
+					.setRequired(false)
+			)
 		)
 		.addSubcommand(subcommand => subcommand
 			.setName('delete')
@@ -30,7 +39,14 @@ module.exports = {
 		),
 
 	async execute(interaction) {
-		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+		const ephemeralBool = interaction.options.getString('visible');
+
+		if (ephemeralBool) {
+			await interaction.deferReply();
+		} else {
+			await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+		}
+
 
 		const sub = interaction.options.getSubcommand();
 

@@ -13,7 +13,7 @@ client.buttons = new Map();
 client.modals = new Map();
 client.selects = new Map();
 
-client.timezones = require('./timezones.json');
+client.timezones = require('./utils/timezones').buildTimezoneList();
 client.userTimezones = new Map();
 
 client.failedAnnouncements = new Map();
