@@ -41,10 +41,22 @@ module.exports = {
         const baseDir = path.join(__dirname, '..', 'Attachments', announcementId);
         fs.mkdirSync(baseDir, { recursive: true });
 
+        function resolveUniqueFileName(dir, fileName) {
+            const ext = path.extname(fileName);
+            const base = path.basename(fileName, ext);
+            let candidate = fileName;
+            let counter = 2;
+            while (fs.existsSync(path.join(dir, candidate))) {
+                candidate = `${base} (${counter})${ext}`;
+                counter++;
+            }
+            return candidate;
+        }
+
         try {
             for (const [, attachment] of attachments) {
                 const fileUrl = attachment.url;
-                const fileName = attachment.name;
+                const fileName = resolveUniqueFileName(baseDir, attachment.name);
                 const savePath = path.join(baseDir, fileName);
 
                 const response = await fetch(fileUrl);

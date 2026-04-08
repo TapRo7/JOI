@@ -1,5 +1,7 @@
 const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ChannelSelectMenuBuilder, ChannelType, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, LabelBuilder, FileUploadBuilder } = require('discord.js');
 const { getUserConfiguration } = require('../database/settings');
+const fs = require('fs');
+const path = require('path');
 
 // ANNOUNCEMENT TEXT SETUP
 const announcementTextModal = new ModalBuilder()
@@ -148,9 +150,67 @@ module.exports = {
             await interaction.showModal(announcementTimeModalSetup(timezone));
             return interaction.client.userTimezones.set(interaction.user.id, timezone);
         }
-
-        if (selectedValue === 'setAnnouncementChannel') {
+        else if (selectedValue === 'setAnnouncementChannel') {
             await interaction.reply({ content: 'Select the channel for your Announcement below', components: [announcementChannelRow], flags: MessageFlags.Ephemeral });
+        }
+        else if (selectedValue === 'removeAnnouncementMedia') {
+            let setupEmbed;
+
+            if (interaction.message.embeds.length == 2) {
+                setupEmbed = interaction.message.embeds[1];
+            } else {
+                setupEmbed = interaction.message.embeds[0];
+            }
+
+            const match = setupEmbed.footer.text.match(/\d+/);
+            const count = match ? Number(match[0]) : 0;
+
+            if (count === 0) {
+                const replyMessage = await interaction.reply({ content: 'There are no media files to remove.', flags: MessageFlags.Ephemeral });
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                return await replyMessage.delete();
+            }
+
+            let announcementId;
+            for (const field of setupEmbed.fields) {
+                if (field.name.includes('Announcement ID')) {
+                    announcementId = field.value.slice(2);
+                }
+            }
+
+            const baseDir = path.join(__dirname, '..', 'Attachments', announcementId);
+            const files = fs.existsSync(baseDir) ? fs.readdirSync(baseDir) : [];
+
+            if (files.length === 0) {
+                const replyMessage = await interaction.reply({ content: 'There are no media files to remove.', flags: MessageFlags.Ephemeral });
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                return await replyMessage.delete();
+            }
+
+            const fileOptions = files.map(fileName =>
+                new StringSelectMenuOptionBuilder()
+                    .setLabel(fileName.length > 100 ? fileName.substring(0, 97) + '...' : fileName)
+                    .setValue(fileName)
+            );
+
+            const announcementRemoveMediaSelect = new StringSelectMenuBuilder()
+                .setCustomId('announcementRemoveMediaSelect')
+                .setPlaceholder('Select files to remove')
+                .setMinValues(1)
+                .setMaxValues(Math.min(10, files.length))
+                .addOptions(fileOptions);
+
+            const announcementRemoveMediaLabel = new LabelBuilder()
+                .setLabel('Select Media to Remove')
+                .setDescription('Select the files you want to remove from this announcement.')
+                .setStringSelectMenuComponent(announcementRemoveMediaSelect);
+
+            const announcementRemoveMediaModal = new ModalBuilder()
+                .setCustomId('announcementRemoveMediaModal')
+                .setTitle('Remove Announcement Media')
+                .addLabelComponents(announcementRemoveMediaLabel);
+
+            return await interaction.showModal(announcementRemoveMediaModal);
         }
     }
 };

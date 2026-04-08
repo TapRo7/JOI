@@ -21,6 +21,12 @@ const announcementSetupSelect = new StringSelectMenuBuilder()
             .setDescription('Add Images, Videos or Files to the Announcement'),
 
         new StringSelectMenuOptionBuilder()
+            .setLabel('Remove Media')
+            .setEmoji('🗑️')
+            .setValue('removeAnnouncementMedia')
+            .setDescription('Remove media files from the Announcement'),
+
+        new StringSelectMenuOptionBuilder()
             .setLabel('Set Channel')
             .setEmoji('#️⃣')
             .setValue('setAnnouncementChannel')
