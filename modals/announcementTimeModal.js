@@ -27,8 +27,11 @@ module.exports = {
         const epochTimestamp = Math.floor(localMoment.valueOf() / 1000);
         const currentEpoch = Math.floor(Date.now() / 1000);
 
-        if (epochTimestamp - currentEpoch < 600) {
-            return await interaction.followUp({ content: 'The announcement time must be at least **10 minutes in the future**.', flags: MessageFlags.Ephemeral });
+        if (epochTimestamp - currentEpoch < 120) {
+            const replyMessage = await interaction.followUp({ content: 'The announcement time must be at least **2 minutes in the future**.', flags: MessageFlags.Ephemeral });
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            await interaction.deleteReply(replyMessage);
+            return;
         }
 
         const hour24 = localMoment.format('HH');

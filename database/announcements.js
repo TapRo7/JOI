@@ -3,7 +3,7 @@ const { insertOne, deleteOne, updateOne, find, findOne } = require('./index');
 const COLLECTION_NAME = 'scheduledAnnouncements';
 const BACKUP_COLLECTION_NAME = 'backupAnnouncements';
 
-async function addAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText) {
+async function addAnnouncement(announcementId, schedulerId, announcementName, channelId, guildId, sendAtEpoch, announcementText, mediaUrls = []) {
     const newAnnouncement = {
         _id: announcementId,
         schedulerId,
@@ -13,6 +13,7 @@ async function addAnnouncement(announcementId, schedulerId, announcementName, ch
         guildId,
         sendAtEpoch,
         announcementText,
+        mediaUrls,
         archived: false
     };
 

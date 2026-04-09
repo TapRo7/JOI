@@ -1,20 +1,6 @@
-const { getDueAnnouncements, deleteAnnouncement, editAnnouncement } = require('../database/announcements');
+const { getDueAnnouncements, deleteAnnouncement } = require('../database/announcements');
 const { getGuildConfiguration } = require('../database/settings');
 const { decryptToken } = require('../utils/tokenEncryption');
-const fs = require('fs');
-const path = require('path');
-
-function getAnnouncementFiles(announcementId) {
-    const dir = path.join(__dirname, '..', 'Attachments', announcementId);
-
-    if (!fs.existsSync(dir)) return [];
-
-    return fs.readdirSync(dir)
-        .map(fileName => ({
-            attachment: path.join(dir, fileName),
-            name: fileName
-        }));
-}
 
 module.exports = {
     name: 'Post Announcements',
@@ -74,10 +60,10 @@ module.exports = {
             }
 
             try {
-                const files = getAnnouncementFiles(announcementId).slice(0, 10);
+                const files = (announcement.mediaUrls ?? []).map(m => ({ attachment: m.url, name: m.name }));
                 await webhook.send({
                     content: announcement.announcementText,
-                    files
+                    ...(files.length > 0 && { files })
                 });
             }
             catch (error) {
@@ -90,10 +76,6 @@ module.exports = {
 
             await deleteAnnouncement(announcementId);
             client.failedAnnouncements.delete(announcementId);
-            fs.rmSync(
-                path.join(__dirname, '..', 'Attachments', announcementId),
-                { recursive: true, force: true }
-            );
         }
     }
 };

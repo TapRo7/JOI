@@ -1,7 +1,6 @@
 const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, ChannelSelectMenuBuilder, ChannelType, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, LabelBuilder, FileUploadBuilder } = require('discord.js');
 const { getUserConfiguration } = require('../database/settings');
-const fs = require('fs');
-const path = require('path');
+const { getAnnouncementMedia } = require('../utils/cache');
 
 // ANNOUNCEMENT TEXT SETUP
 const announcementTextModal = new ModalBuilder()
@@ -178,26 +177,25 @@ module.exports = {
                 }
             }
 
-            const baseDir = path.join(__dirname, '..', 'Attachments', announcementId);
-            const files = fs.existsSync(baseDir) ? fs.readdirSync(baseDir) : [];
+            const mediaFiles = await getAnnouncementMedia(announcementId);
 
-            if (files.length === 0) {
+            if (mediaFiles.length === 0) {
                 const replyMessage = await interaction.reply({ content: 'There are no media files to remove.', flags: MessageFlags.Ephemeral });
                 await new Promise(resolve => setTimeout(resolve, 5000));
                 return await replyMessage.delete();
             }
 
-            const fileOptions = files.map(fileName =>
+            const fileOptions = mediaFiles.map(m =>
                 new StringSelectMenuOptionBuilder()
-                    .setLabel(fileName.length > 100 ? fileName.substring(0, 97) + '...' : fileName)
-                    .setValue(fileName)
+                    .setLabel(m.name.length > 100 ? m.name.substring(0, 97) + '...' : m.name)
+                    .setValue(m.name)
             );
 
             const announcementRemoveMediaSelect = new StringSelectMenuBuilder()
                 .setCustomId('announcementRemoveMediaSelect')
                 .setPlaceholder('Select files to remove')
                 .setMinValues(1)
-                .setMaxValues(Math.min(10, files.length))
+                .setMaxValues(Math.min(10, mediaFiles.length))
                 .addOptions(fileOptions);
 
             const announcementRemoveMediaLabel = new LabelBuilder()

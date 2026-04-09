@@ -1,5 +1,6 @@
 const { MessageFlags } = require('discord.js');
 const { addAnnouncement } = require('../database/announcements');
+const { getAnnouncementMedia, deleteAnnouncementMedia } = require('../utils/cache');
 
 async function replyIncompleteSetup(interaction) {
     const replyMessage = await interaction.followUp({ content: 'Please complete the announcement setup first.', flags: MessageFlags.Ephemeral });
@@ -46,8 +47,29 @@ module.exports = {
             }
         }
 
+        const currentEpoch = Math.floor(Date.now() / 1000);
+
+        if (announcementEpochTime - currentEpoch < 120) {
+            const replyMessage = await interaction.followUp({ content: 'The announcement time must be at least **2 minutes in the future**.', flags: MessageFlags.Ephemeral });
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            await interaction.deleteReply(replyMessage);
+            return;
+        }
+
         if ([announcementName, announcementId, announcementContent, announcementChannelId, announcementEpochTime].some(v => v == null)) {
             return await replyIncompleteSetup(interaction);
+        }
+
+        const footerMatch = setupEmbed.footer.text.match(/\d+/);
+        const footerCount = footerMatch ? Number(footerMatch[0]) : 0;
+        const mediaUrls = await getAnnouncementMedia(announcementId);
+
+        if (footerCount > 0 && mediaUrls.length !== footerCount) {
+            return await interaction.editReply({
+                content: 'This setup has expired, please start over.',
+                embeds: [],
+                components: []
+            });
         }
 
         const announcementAdded = await addAnnouncement(
@@ -57,14 +79,16 @@ module.exports = {
             announcementChannelId,
             interaction.guild.id,
             announcementEpochTime,
-            announcementContent
+            announcementContent,
+            mediaUrls
         );
 
         if (announcementAdded) {
+            await deleteAnnouncementMedia(announcementId);
             return await interaction.editReply({ content: 'Your announcement has been scheduled!', embeds: [], components: [] });
         }
         else {
-            return await interaction.followup({ content: 'Something went wrong.', flags: MessageFlags.Ephemeral });
+            return await interaction.followUp({ content: 'Something went wrong.', flags: MessageFlags.Ephemeral });
         }
     }
 };

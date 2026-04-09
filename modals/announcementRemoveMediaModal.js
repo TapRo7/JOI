@@ -1,6 +1,5 @@
 const { MessageFlags, EmbedBuilder } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
+const { getAnnouncementMedia, setAnnouncementMedia } = require('../utils/cache');
 
 module.exports = {
     customId: 'announcementRemoveMediaModal',
@@ -25,37 +24,21 @@ module.exports = {
         }
 
         const selectedFiles = interaction.fields.getStringSelectValues('announcementRemoveMediaSelect');
-        const baseDir = path.join(__dirname, '..', 'Attachments', announcementId);
 
-        let deletedCount = 0;
-        const errors = [];
+        const currentMedia = await getAnnouncementMedia(announcementId);
+        const updatedMedia = currentMedia.filter(m => !selectedFiles.includes(m.name));
+        const deletedCount = currentMedia.length - updatedMedia.length;
 
-        for (const fileName of selectedFiles) {
-            const filePath = path.join(baseDir, fileName);
-            try {
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                    deletedCount++;
-                }
-            } catch (error) {
-                console.error(`Failed to delete ${fileName}:`, error);
-                errors.push(fileName);
-            }
-        }
+        await setAnnouncementMedia(announcementId, updatedMedia);
 
-        const match = setupEmbed.data.footer.text.match(/\d+/);
-        const currentCount = match ? Number(match[0]) : 0;
-        const newCount = currentCount - deletedCount;
-
-        setupEmbed.setFooter({ text: `${newCount} Attachments uploaded` });
+        setupEmbed.setFooter({ text: `${updatedMedia.length} Attachments uploaded` });
 
         await interaction.editReply({ embeds: rebuiltEmbeds });
 
-        const message = errors.length > 0
-            ? `Removed ${deletedCount} file(s). Failed to remove: ${errors.join(', ')}`
-            : `Successfully removed ${deletedCount} file(s). ${newCount} attachment(s) remaining.`;
-
-        const replyMessage = await interaction.followUp({ content: message, flags: MessageFlags.Ephemeral });
+        const replyMessage = await interaction.followUp({
+            content: `Successfully removed ${deletedCount} file(s). ${updatedMedia.length} attachment(s) remaining.`,
+            flags: MessageFlags.Ephemeral
+        });
 
         await new Promise(resolve => setTimeout(resolve, 5000));
         await interaction.deleteReply(replyMessage);
